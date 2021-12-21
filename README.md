@@ -1,5 +1,6 @@
 # MyPathTracer
-A simple path tracing renderer modified and rewritten based on assignment 5-7 from [GAMES101 Introduction to Computer Graphics](https://sites.cs.ucsb.edu/~lingqi/teaching/games101.html) by Professor Lingqi Yan, University of California, Santa Barbara.
+A simple path tracing renderer currently supporting diffuse and opaque microfacet materials.  
+Many ideas are from assignment 5-7 from [GAMES101 Introduction to Computer Graphics](https://sites.cs.ucsb.edu/~lingqi/teaching/games101.html) by Professor Lingqi Yan, University of California, Santa Barbara.
 
 #### Program Structure
 xx
@@ -29,9 +30,14 @@ Additional notes:
 * The program uses multithreading via [OpenMP](https://www.openmp.org/), which is supported by most of the current compilers, but you can opt not to use it by editting *main.cpp*(line 46)
 
 
+#### Future work
+* Implement rough transparent materials. An amazing related [article](https://agraphicsguynotes.com/posts/glass_material_simulated_by_microfacet_bxdf/) and the referenced [paper](https://www.cs.cornell.edu/~srm/publications/EGSR07-btdf.html).
+* Implement bidirectional path tracing with multi importance sampling to boost renderer robustness when direct lighting is hard to sample(e.g. a scene lit mostly by diffused light). See reference No.4.
+* Optimize BVH structure with SAH(Surface Area Heuristic) method.
+* More will come up after I crack down current objectives.
 #### References
-1. [GAMES101 Lecture materials and slides](https://sites.cs.ucsb.edu/~lingqi/teaching/games101.html)
-2. [Importance Sampling techniques for GGX with Smith Masking-Shadowing](https://schuttejoe.github.io/post/ggximportancesamplingpart1/)
-3. [PBR Theory](https://learnopengl.com/PBR/Theory)
-4. [Robust Monte Carlo Methods for Light Transport Simulation](http://graphics.stanford.edu/papers/veach_thesis/)
-5. [Sampling Microfacet BRDF](https://agraphicsguynotes.com/posts/sample_microfacet_brdf/)
+[1] [GAMES101 Lecture materials and slides](https://sites.cs.ucsb.edu/~lingqi/teaching/games101.html)  
+[2] [Importance Sampling techniques for GGX with Smith Masking-Shadowing](https://schuttejoe.github.io/post/ggximportancesamplingpart1/)  
+[3] [PBR Theory](https://learnopengl.com/PBR/Theory)  
+[4] [Robust Monte Carlo Methods for Light Transport Simulation](http://graphics.stanford.edu/papers/veach_thesis/)  
+[5] [Sampling Microfacet BRDF](https://agraphicsguynotes.com/posts/sample_microfacet_brdf/)  

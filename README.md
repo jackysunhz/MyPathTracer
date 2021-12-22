@@ -7,7 +7,6 @@ xx
 
 
 #### Compile and Run
-
 A directly runnable *MyPathTracer.exe* is provided under "out/build/x64-release/". 
   
 If you wish to build and test the code yourself, make sure you are using an IDE with cmake support(VS2019 in my case), or you have the [cmake software](https://cmake.org/download/) installed in your system. Then you can build a cmake project via the cmakelists provided.  
@@ -35,6 +34,8 @@ Additional notes:
 * Implement bidirectional path tracing with multi importance sampling to boost renderer robustness when direct lighting is hard to sample(e.g. a scene lit mostly by diffused light). See reference No.4.
 * Optimize BVH structure with SAH(Surface Area Heuristic) method.
 * More will come up after I crack down current objectives.
+
+
 #### References
 [1] [GAMES101 Lecture materials and slides](https://sites.cs.ucsb.edu/~lingqi/teaching/games101.html)  
 [2] [Importance Sampling techniques for GGX with Smith Masking-Shadowing](https://schuttejoe.github.io/post/ggximportancesamplingpart1/)  

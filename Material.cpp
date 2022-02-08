@@ -128,7 +128,7 @@ float Material::D_GGX(const Vector3f& N, const Vector3f& H, float a)
     float NdotH = dotProduct(N, H);
     if (NdotH <= 0) { return 0; }
     float a2 = a * a;
-    float nom = a2 * NdotH;
+    float nom = a2;
     float tanTheta = crossProduct(N, H).norm() / NdotH;
     float denom = a2 + tanTheta * tanTheta;
     denom = M_PI * powf(NdotH, 4) * denom * denom;

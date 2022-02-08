@@ -1,7 +1,3 @@
-//
-// Created by goksu on 2/25/20.
-//
-
 #include <fstream>
 #include "Renderer.h"
 

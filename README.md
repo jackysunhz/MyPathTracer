@@ -2,6 +2,8 @@
 A simple path tracing renderer currently supporting diffuse and opaque microfacet materials.  
 Special thanks to Professor Lingqi Yan, University of California, Santa Barbara on his amazing course [GAMES101 Introduction to Computer Graphics](https://sites.cs.ucsb.edu/~lingqi/teaching/games101.html) and everyone who helped make the course publicly available.
 
+![This is an image](/img/TheBox.png)
+
 #### Program Structure
 xx
 

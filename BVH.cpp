@@ -2,13 +2,8 @@
 #include <cassert>
 #include "BVH.h"
 
-/* 
-* Private Methods
-*/
-BVHNode* BVH::buildTree(std::vector<Object*> objects)
-{
+BVHNode* BVH::buildTree(std::vector<Object*> objects) {
     BVHNode* node = new BVHNode();
-
     if (objects.size() == 1) {
         auto obj = objects[0];
         node->bounds = obj->getBounds();
@@ -61,11 +56,10 @@ BVHNode* BVH::buildTree(std::vector<Object*> objects)
     }
 }
 
-Intersection BVH::intersect(BVHNode* node, const Ray& ray) const
-{
-    if (node->bounds.IntersectP(ray, ray.direction_inv)) {//ray enters the bounding box
+Intersection BVH::intersect(BVHNode* node, const Ray& ray) const {
+    if (node->bounds.IntersectP(ray, ray.direction_inverse)) {//ray enters the bounding box
         if (node->object) {//currently at leaf node
-            return node->object->GetIntersection(ray);
+            return node->object->getIntersection(ray);
         }
         //if not at leaf node, return child intersection with smaller distance
         Intersection leftIntersection = intersect(node->left, ray);
@@ -75,11 +69,9 @@ Intersection BVH::intersect(BVHNode* node, const Ray& ray) const
     else {
         return Intersection();
     }
-
 }
 
-void BVH::sample(BVHNode* node, float p, Intersection &inter, float &pdf)
-{
+void BVH::sample(BVHNode* node, float p, Intersection &inter, float &pdf) {
     if(node->left == nullptr || node->right == nullptr){
         node->object->Sample(inter, pdf);
         pdf *= node->area;
@@ -89,11 +81,7 @@ void BVH::sample(BVHNode* node, float p, Intersection &inter, float &pdf)
     else sample(node->right, p - node->left->area, inter, pdf);
 }
 
-/* 
-* Public Methods
-*/
-BVH::BVH(std::vector<Object*> p): primitives(std::move(p))
-{
+BVH::BVH(std::vector<Object*> p): primitives(std::move(p)) {
     if (primitives.empty())
         return;
     root = buildTree(primitives);
@@ -101,8 +89,7 @@ BVH::BVH(std::vector<Object*> p): primitives(std::move(p))
 
 BVH::~BVH() = default;
 
-Intersection BVH::GetIntersection(const Ray& ray) const
-{
+Intersection BVH::GetIntersection(const Ray& ray) const {
     Intersection isect;
     if (!root)
         return isect;
@@ -110,8 +97,7 @@ Intersection BVH::GetIntersection(const Ray& ray) const
     return isect;
 }
 
-void BVH::GetSample(Intersection &inter, float &pdf)
-{
+void BVH::GetSample(Intersection &inter, float &pdf) {
     float p = std::sqrt(get_random_float()) * root->area;
     sample(root, p, inter, pdf);
     pdf /= root->area;

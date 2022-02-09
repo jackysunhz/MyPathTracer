@@ -7,12 +7,11 @@
 #include "Material.h"
 #include <chrono>
 
-//using namespace Eigen;
 int main()
 {
     Scene scene;
     Renderer r;
-    
+
     Material* red = new Material(DIFFUSE, Vector3f(0.0f), Vector3f(0.63f, 0.065f, 0.05f));
     Material* green = new Material(DIFFUSE, Vector3f(0.0f), Vector3f(0.14f, 0.45f, 0.091f));
     Material* white = new Material(DIFFUSE, Vector3f(0.0f), Vector3f(0.725f, 0.71f, 0.68f));
@@ -44,14 +43,14 @@ int main()
     scene.BuildBVH();
     auto stop = std::chrono::system_clock::now();
     std::cout << "BVH generation completed in: " << std::chrono::duration_cast<std::chrono::seconds>(stop - start).count() << " seconds\n\n";
-    
+
     /*Scene and Renderer Settings*/
     scene.SetFov(40);
     scene.SetResolution(784, 784);
     scene.SetRR(0.80);//Each ray is expected to bounce 1 / (1 - RR) times unless it hits light source directly
     r.EnableMultiThreading(true);//Set to false if openmp is not supported or you do not want to use multi threading
     r.SetMaxThreads(0);//You can specify max number of threads to use here(0 uses all available threads)
-    r.SetSpp(512);//Set number of samplings per pixel(larger SSP usually generates less noisy result)
+    r.SetSpp(64);//Set number of samplings per pixel(larger SSP usually generates less noisy result)
 
     start = std::chrono::system_clock::now();
     r.Render(scene);

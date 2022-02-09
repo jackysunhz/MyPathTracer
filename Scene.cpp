@@ -1,6 +1,5 @@
 #include "Scene.h"
-void Scene::SampleLight(Intersection &inter, float &pdf) const
-{
+void Scene::SampleLight(Intersection &inter, float &pdf) const {
     float emit_area_sum = 0;
     for (uint32_t k = 0; k < objects.size(); ++k) {
         if (objects[k]->hasEmit()){
@@ -20,8 +19,7 @@ void Scene::SampleLight(Intersection &inter, float &pdf) const
     }
 }
 
-Vector3f Scene::Trace(const Ray& ray, int depth) const
-{
+Vector3f Scene::Trace(const Ray& ray, int depth) const {
     if (depth > this->maxDepth) {
         return Vector3f(0.0, 0.0, 0.0);
     }
@@ -45,6 +43,8 @@ Vector3f Scene::Shade(const Intersection& inter, const Vector3f& wi) const {
     float lightPdf = 0;
     SampleLight(lightSampleInter, lightPdf);
 
+    //the final shading of a point is equal to the direct lighting(by sampling with respect to the light) 
+    //plus the indirect lighting(by sampling the rest of the hemisphere)
     Vector3f l_dir = Vector3f(0, 0, 0);
     Vector3f x = lightSampleInter.coords;
     Vector3f nn = lightSampleInter.normal;

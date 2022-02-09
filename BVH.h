@@ -1,5 +1,4 @@
 #pragma once
-
 #include <atomic>
 #include <vector>
 #include <memory>
@@ -11,40 +10,48 @@
 #include "Vector.h"
 
 struct BVHNode;
-struct BVHPrimitiveInfo;
 
 // BVHAccel Declarations
 inline int leafNodes, totalLeafNodes, totalPrimitives, interiorNodes;
+
 class BVH {
 private:
-    // BVHAccel Private Data
     const int leafNodeObjNum = 1;
     std::vector<Object*> primitives;
     BVHNode* root;
 
-    // BVHAccel Private Methods
+    //construct the BVH tree
     BVHNode* buildTree(std::vector<Object*>objects);
+
+    //calls sample method on lower level objects
     void sample(BVHNode* node, float p, Intersection& pos, float& pdf);
+
+    //recursively finds the intersection given a ray
     Intersection intersect(BVHNode* node, const Ray& ray)const;
 
 public:
-    // BVHAccel Public Types
-    // BVHAccel Public Methods
+    //constructor
     BVH(std::vector<Object*> p);
+
+    //destructor
     ~BVH();
+
+    //this just calls BVH::intersect
     Intersection GetIntersection(const Ray &ray) const;
+
+    //this just calls BVH::sample
     void GetSample(Intersection &pos, float &pdf);
 };
 
-
 struct BVHNode {
     BoundingBox bounds;
-    BVHNode *left;
-    BVHNode *right;
+    BVHNode *left;//left child
+    BVHNode *right;//right child
     Object* object;
     float area;
-    BVHNode(): area(0), left(nullptr), right(nullptr), object(nullptr)
-    {
+
+    //struct constructor
+    BVHNode(): area(0), left(nullptr), right(nullptr), object(nullptr) {
         bounds = BoundingBox();
     }
 };

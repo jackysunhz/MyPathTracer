@@ -1,5 +1,4 @@
 #pragma once
-
 #include "BVH.h"
 #include "Intersection.h"
 #include "Material.h"
@@ -8,8 +7,7 @@
 #include <cassert>
 #include <array>
 
-class Mesh: public Object
-{
+class Mesh: public Object {
 private:
     BoundingBox bounding_box;//BB of the whole mesh
     BVH* bvh;//bvh that breaks down triangles in this mesh
@@ -20,8 +18,8 @@ private:
     std::unique_ptr<Vector3f[]> vertices;
     std::unique_ptr<uint32_t[]> vertexIndex;
 public:
-    Mesh(const std::string& filename, Material* mt = new Material()): m(mt)
-    {
+    //constructor
+    Mesh(const std::string& filename, Material* mt = new Material()): m(mt) {
         //load file using the obj loader (https://github.com/Bly7/OBJ-Loader)
         objl::Loader loader;
         loader.LoadFile(filename);        
@@ -62,14 +60,13 @@ public:
 
     BoundingBox getBounds() { return bounding_box; }
 
-    Intersection GetIntersection(Ray ray) { return bvh ? bvh->GetIntersection(ray) : Intersection(); }
+    Intersection getIntersection(Ray ray) { return bvh ? bvh->GetIntersection(ray) : Intersection(); }
 
     float getArea() { return area; }
 
     bool hasEmit() { return m->hasEmission(); }
 
-    void Sample(Intersection& inter, float& pdf) 
-    {
+    void Sample(Intersection& inter, float& pdf) {
         bvh->GetSample(inter, pdf);
         inter.emit = m->getEmission();
     }

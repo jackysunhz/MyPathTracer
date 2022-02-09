@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Material.h"
 
 Material::Material(MaterialType t, Vector3f e, Vector3f a, float i, float r, float m)
@@ -13,11 +12,9 @@ bool Material::hasEmission() { return emission.norm() > EPSILON; }
 
 Vector3f Material::reflect(const Vector3f& I, const Vector3f& N) const { return I - 2 * dotProduct(I, N) * N; }
 
-Vector3f Material::sample(const Vector3f& wi, const Vector3f& N) 
-{
+Vector3f Material::sample(const Vector3f& wi, const Vector3f& N) {
     switch (m_type) {
-        case DIFFUSE:
-        {
+        case DIFFUSE: {
             // uniform sample on the hemisphere
             float x_1 = get_random_float(), x_2 = get_random_float();
             float z = std::fabs(1.0f - 2.0f * x_1);
@@ -27,8 +24,7 @@ Vector3f Material::sample(const Vector3f& wi, const Vector3f& N)
 
             break;
         }
-        case MICROFACET:
-        {
+        case MICROFACET: {
             float r0 = get_random_float();
             float r1 = get_random_float();
             float a2 = roughness * roughness;
@@ -45,11 +41,9 @@ Vector3f Material::sample(const Vector3f& wi, const Vector3f& N)
     }
 }
 
-float Material::pdf(const Vector3f& wi, const Vector3f& wo, const Vector3f& N) 
-{
+float Material::pdf(const Vector3f& wi, const Vector3f& wo, const Vector3f& N) {
     switch (m_type) {
-        case DIFFUSE:
-        {
+        case DIFFUSE: {
             // uniform sample probability 1 / (2 * PI)
             if (dotProduct(wo, N) > 0.0f)
                 return 0.5f / M_PI;
@@ -57,8 +51,7 @@ float Material::pdf(const Vector3f& wi, const Vector3f& wo, const Vector3f& N)
                 return 0.0f;
             break;
         }
-        case MICROFACET:
-        {
+        case MICROFACET: {
             Vector3f h = (wo - wi).normalized();
             float a2 = roughness * roughness;
             float cosTheta = dotProduct(h, N);
@@ -72,9 +65,8 @@ float Material::pdf(const Vector3f& wi, const Vector3f& wo, const Vector3f& N)
 
 Vector3f Material::brdf(const Vector3f& wi, const Vector3f& wo, const Vector3f& N) {
     switch (m_type) {
-        case DIFFUSE:
-        {
-            // calculate the contribution of diffuse   model
+        case DIFFUSE: {
+            // calculate the contribution of diffuse model
             float cosalpha = dotProduct(N, wo);
             if (cosalpha > 0.0f) {
                 Vector3f diffuse = albedo / M_PI;
@@ -84,8 +76,7 @@ Vector3f Material::brdf(const Vector3f& wi, const Vector3f& wo, const Vector3f& 
                 return Vector3f(0.0f);
             break;
         }
-        case MICROFACET:
-        {
+        case MICROFACET: {
             if (dotProduct(N, wo) < 0) {
                 return Vector3f(0.0f);
             }
@@ -98,13 +89,11 @@ Vector3f Material::brdf(const Vector3f& wi, const Vector3f& wo, const Vector3f& 
             Vector3f f_cooktorrance = D * G * F / (4 * dotProduct(N, -wi) * dotProduct(N, wo));
             return (Vector3f(1) - F) * f_lambert + f_cooktorrance;
             break;
-
         }
     }
 }
 
-float Material::F_exact(const Vector3f& wi, const Vector3f& N, float ior) const
-{
+float Material::F_exact(const Vector3f& wi, const Vector3f& N, float ior) const {
     float etai = 1.0003, etat = ior;
     if (dotProduct(wi, N) < 0) { std::swap(etai, etat); }
     float c = fabs(dotProduct(wi, N));
@@ -117,14 +106,12 @@ float Material::F_exact(const Vector3f& wi, const Vector3f& N, float ior) const
     return lhs * rhs;
 }
 
-Vector3f Material::F_Schlick(float cosTheta)
-{
+Vector3f Material::F_Schlick(float cosTheta) {
     Vector3f F0 = lerp(Vector3f(0.04f), albedo, metalness);
     return F0 + (Vector3f(1.f) - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
-float Material::D_GGX(const Vector3f& N, const Vector3f& H, float a)
-{
+float Material::D_GGX(const Vector3f& N, const Vector3f& H, float a) {
     float NdotH = dotProduct(N, H);
     if (NdotH <= 0) { return 0; }
     float a2 = a * a;

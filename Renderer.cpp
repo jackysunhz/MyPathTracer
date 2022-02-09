@@ -1,6 +1,6 @@
+#pragma once
 #include <fstream>
 #include "Renderer.h"
-
 
 Renderer::Renderer(int _spp, bool use_mt, int maxt):
     spp(_spp), useMultiThreads(use_mt), maxThreads(maxt) {}
@@ -11,11 +11,7 @@ void Renderer::EnableMultiThreading(bool usemt) { useMultiThreads = usemt; }
 
 void Renderer::SetMaxThreads(int maxt) { maxThreads = maxt; }
 
-// The main render function. This where we iterate over all pixels in the image,
-// generate primary rays and cast these rays into the scene. The content of the
-// framebuffer is saved to a file.
-void Renderer::Render(const Scene& scene)
-{
+void Renderer::Render(const Scene& scene) {
     std::cout << "Number of samplings per pixel: " << spp << ".\n";
     int width = scene.GetWidth();
     int height = scene.GetHeight();
@@ -38,7 +34,6 @@ void Renderer::Render(const Scene& scene)
             int start_height = t * height_per_thread;
             int end_height = (t + 1) * height_per_thread;
             int m = start_height * width;
-            //while(j < height_per_thread && j < height)
             for (uint32_t j = start_height; j < end_height && j < height; ++j) {
                 for (uint32_t i = 0; i < width; ++i) {
                     for (int k = 0; k < spp; k++) {

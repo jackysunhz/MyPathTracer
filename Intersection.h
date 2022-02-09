@@ -1,10 +1,9 @@
 #pragma once
-//#include "Vector.h"
+#include "Vector.h"
 #include "Material.h"
 class Object;
 
-struct Intersection
-{
+struct Intersection {
     Intersection(){
         happened=false;
         coords=Vector3f();
@@ -14,11 +13,11 @@ struct Intersection
         m=nullptr;
     }
     bool happened;
-    Vector3f coords;
-    Vector3f tcoords;
+    Vector3f coords;//position
+    Vector3f tcoords;//texture coords
     Vector3f normal;
-    Vector3f emit;
-    double distance;
+    Vector3f emit;//emission at the intersection surface
+    double distance;//distance to the camera(for depth test)
     Object* obj;
     Material* m;
 };

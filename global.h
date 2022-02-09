@@ -5,17 +5,16 @@
 #include "Vector.h"
 
 #undef M_PI
-#define M_PI 3.141592653589793f
+#define M_PI 3.1415926536f
 
 const float EPSILON = 0.00016f;
 
-inline float clamp(const float& lo, const float& hi, const float& v) 
-{ 
+inline float clamp(const float& lo, const float& hi, const float& v) { 
     return std::max(lo, std::min(hi, v)); 
 }
 
-inline  bool solveQuadratic(const float &a, const float &b, const float &c, float &x0, float &x1)
-{
+//return if a quadratic equation is solvable, and updates x0, x1 if there is root
+inline bool solveQuadratic(const float &a, const float &b, const float &c, float &x0, float &x1) {
     float discr = b * b - 4 * a * c;
     if (discr < 0) return false;
     else if (discr == 0) x0 = x1 = - 0.5 * b / a;
@@ -30,8 +29,8 @@ inline  bool solveQuadratic(const float &a, const float &b, const float &c, floa
     return true;
 }
 
-inline Vector3f toWorld(const Vector3f& a, const Vector3f& N) 
-{
+//convert a vector from local space(given N) to world space
+inline Vector3f toWorld(const Vector3f& a, const Vector3f& N) {
     Vector3f B, C;
     if (std::fabs(N.x) > std::fabs(N.y)) {
         float invLen = 1.0f / std::sqrt(N.x * N.x + N.z * N.z);
@@ -45,21 +44,21 @@ inline Vector3f toWorld(const Vector3f& a, const Vector3f& N)
     return a.x * B + a.y * C + a.z * N;
 }
 
-inline float get_random_float()
-{
+//generate a random float from 0 to 1
+inline float get_random_float() {
     static std::random_device dev;
     static std::mt19937 rng(dev());
     static std::uniform_real_distribution<float> dist(0.f, 1.f);
     return dist(rng);
 }
 
-inline float deg2rad(const float& deg) 
-{ 
+//return radians from degrees
+inline float deg2rad(const float& deg) { 
     return deg * M_PI / 180.0; 
 }
 
-inline void UpdateProgress(float progress)
-{
+//print the progress on the console, given a progress value(from 0 to 1)
+inline void UpdateProgress(float progress) {
     printf("\r      ");
     printf("\r%.2f %%", progress * 100);
 }

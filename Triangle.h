@@ -1,5 +1,4 @@
 #pragma once
-
 #include "BVH.h"
 #include "Intersection.h"
 #include "Material.h"
@@ -7,8 +6,8 @@
 #include "Object.h"
 #include <cassert>
 #include <array>
-class Triangle : public Object
-{
+
+class Triangle : public Object {
 private:
     Vector3f v0, v1, v2; // vertices A, B ,C , counter-clockwise order
     Vector3f e1, e2;     // 2 edges v1-v0, v2-v0;
@@ -16,17 +15,16 @@ private:
     float area;
     Material* m;
 public:
+    //constructor
     Triangle(Vector3f _v0, Vector3f _v1, Vector3f _v2, Material* _m = nullptr)
-        : v0(_v0), v1(_v1), v2(_v2), m(_m)
-    {
+        : v0(_v0), v1(_v1), v2(_v2), m(_m) {
         e1 = v1 - v0;
         e2 = v2 - v0;
         normal = normalize(crossProduct(e1, e2));
         area = crossProduct(e1, e2).norm()*0.5f;
     }
 
-    Intersection GetIntersection(Ray ray)
-    {
+    Intersection getIntersection(Ray ray) {
         /* Find ray - triangle intersection using Moller Trumbore Algorithm
            Basic idea: express a point in triangle using baricentric coordinates and equate with O + tD
            where O is the ray origin and D is the ray direction*/
@@ -64,8 +62,7 @@ public:
 
     bool hasEmit() { return m->hasEmission(); }
 
-    void Sample(Intersection& inter, float& pdf) 
-    {
+    void Sample(Intersection& inter, float& pdf) {
         float x = std::sqrt(get_random_float());
         float y = get_random_float();
         inter.coords = v0 * (1.0f - x) + v1 * (x * (1.0f - y)) + v2 * (x * y);

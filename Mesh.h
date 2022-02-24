@@ -22,7 +22,16 @@ public:
     Mesh(const std::string& filename, Material* mt = new Material()): m(mt) {
         //load file using the obj loader (https://github.com/Bly7/OBJ-Loader)
         objl::Loader loader;
-        loader.LoadFile(filename);        
+        try {
+            loader.LoadFile(filename);
+            if (loader.LoadedMeshes.size() != 1) {
+                throw std::invalid_argument("Location " + filename + " cannot be found.\n");
+            }
+        }
+        catch(const std::invalid_argument& e){
+            std::cout << filename + " is not loaded, please check the file path provided." << std::endl;
+            return;
+        }
         assert(loader.LoadedMeshes.size() == 1);//throw error if mesh is not loaded
         auto mesh = loader.LoadedMeshes[0];
         Vector3f min_vert = Vector3f{ std::numeric_limits<float>::infinity(),
@@ -58,16 +67,18 @@ public:
         bvh = new BVH(ptrs);
     }
 
+    bool IsEmpty() { return triangles.empty(); }
+
     BoundingBox getBounds() { return bounding_box; }
 
     Intersection getIntersection(Ray ray) { return bvh ? bvh->GetIntersection(ray) : Intersection(); }
 
     float getArea() { return area; }
 
-    bool hasEmit() { return m->hasEmission(); }
+    bool hasEmit() { return m->HasEmission(); }
 
     void Sample(Intersection& inter, float& pdf) {
         bvh->GetSample(inter, pdf);
-        inter.emit = m->getEmission();
+        inter.emit = m->GetEmission();
     }
 };

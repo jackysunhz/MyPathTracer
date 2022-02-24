@@ -4,15 +4,15 @@
 Material::Material(MaterialType t, Vector3f e, Vector3f a, float i, float r, float m)
     : m_type(t), emission(e), albedo(a), ior(i), roughness(r), metalness(m) {}
 
-MaterialType Material::getType() { return m_type; }
+MaterialType Material::GetType() { return m_type; }
 
-Vector3f Material::getEmission() { return emission; }
+Vector3f Material::GetEmission() { return emission; }
 
-bool Material::hasEmission() { return emission.norm() > EPSILON; }
+bool Material::HasEmission() { return emission.norm() > EPSILON; }
 
-Vector3f Material::reflect(const Vector3f& I, const Vector3f& N) const { return I - 2 * dotProduct(I, N) * N; }
+Vector3f Material::Reflect(const Vector3f& I, const Vector3f& N) const { return I - 2 * dotProduct(I, N) * N; }
 
-Vector3f Material::sample(const Vector3f& wi, const Vector3f& N) {
+Vector3f Material::Sample(const Vector3f& wi, const Vector3f& N) {
     switch (m_type) {
         case DIFFUSE: {
             // uniform sample on the hemisphere
@@ -33,7 +33,7 @@ Vector3f Material::sample(const Vector3f& wi, const Vector3f& N) {
             float z = cos(theta);
             float r = std::sqrt(1.0f - z * z);
             Vector3f wm = toWorld(Vector3f(r * cosf(phi), r * sinf(phi), z), N);
-            Vector3f wo = reflect(wi, wm);
+            Vector3f wo = Reflect(wi, wm);
             return wo;
 
             break;
@@ -41,7 +41,7 @@ Vector3f Material::sample(const Vector3f& wi, const Vector3f& N) {
     }
 }
 
-float Material::pdf(const Vector3f& wi, const Vector3f& wo, const Vector3f& N) {
+float Material::Pdf(const Vector3f& wi, const Vector3f& wo, const Vector3f& N) {
     switch (m_type) {
         case DIFFUSE: {
             // uniform sample probability 1 / (2 * PI)
@@ -63,7 +63,7 @@ float Material::pdf(const Vector3f& wi, const Vector3f& wo, const Vector3f& N) {
     }
 }
 
-Vector3f Material::brdf(const Vector3f& wi, const Vector3f& wo, const Vector3f& N) {
+Vector3f Material::Bxdf(const Vector3f& wi, const Vector3f& wo, const Vector3f& N) {
     switch (m_type) {
         case DIFFUSE: {
             // calculate the contribution of diffuse model
@@ -80,20 +80,13 @@ Vector3f Material::brdf(const Vector3f& wi, const Vector3f& wo, const Vector3f& 
             if (dotProduct(N, wo) < 0) {
                 return Vector3f(0.0f);
             }
-            Vector3f h = (wo - wi).normalized();
-            Vector3f F = F_Schlick(dotProduct(-wi, h));
-            Vector3f f_lambert = albedo / M_PI;
-            float D = D_GGX(N, h, roughness);
-            float k = (1 + roughness) * (1 + roughness) * 0.125f;
-            float G = G1_GGX(-wi, h, N) * G1_GGX(wo, h, N);
-            Vector3f f_cooktorrance = D * G * F / (4 * dotProduct(N, -wi) * dotProduct(N, wo));
-            return (Vector3f(1) - F) * f_lambert + f_cooktorrance;
+            return brdf(wi, wo, N);
             break;
         }
     }
 }
 
-float Material::F_exact(const Vector3f& wi, const Vector3f& N, float ior) const {
+float Material::f_exact(const Vector3f& wi, const Vector3f& N) const {
     float etai = 1.0003, etat = ior;
     if (dotProduct(wi, N) < 0) { std::swap(etai, etat); }
     float c = fabs(dotProduct(wi, N));
@@ -106,12 +99,12 @@ float Material::F_exact(const Vector3f& wi, const Vector3f& N, float ior) const 
     return lhs * rhs;
 }
 
-Vector3f Material::F_Schlick(float cosTheta) {
+Vector3f Material::f_Schlick(float cosTheta) {
     Vector3f F0 = lerp(Vector3f(0.04f), albedo, metalness);
     return F0 + (Vector3f(1.f) - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
-float Material::D_GGX(const Vector3f& N, const Vector3f& H, float a) {
+float Material::d_GGX(const Vector3f& N, const Vector3f& H, float a) {
     float NdotH = dotProduct(N, H);
     if (NdotH <= 0) { return 0; }
     float a2 = a * a;
@@ -122,10 +115,23 @@ float Material::D_GGX(const Vector3f& N, const Vector3f& H, float a) {
     return nom / denom;
 }
 
-float Material::G1_GGX(const Vector3f& v, const Vector3f& h, const Vector3f& N) {
+float Material::g1_GGX(const Vector3f& v, const Vector3f& h, const Vector3f& N) {
     float NdotV = dotProduct(N, v);
     float lhs = std::max(dotProduct(v, h) / NdotV, 0.f);
     float tanTheta = crossProduct(N, v).norm() / NdotV;
     float rhs = 2 / (1 + sqrtf(1 + roughness * roughness * tanTheta * tanTheta));
     return lhs * rhs;
 }
+
+Vector3f Material::brdf(const Vector3f& wi, const Vector3f& wo, const Vector3f& N)
+{
+    Vector3f h = (wo - wi).normalized();
+    Vector3f F = f_Schlick(dotProduct(-wi, h));
+    Vector3f f_lambert = albedo / M_PI;
+    float D = d_GGX(N, h, roughness);
+    float k = (1 + roughness) * (1 + roughness) * 0.125f;
+    float G = g1_GGX(-wi, h, N) * g1_GGX(wo, h, N);
+    Vector3f f_cooktorrance = D * G * F / (4 * dotProduct(N, -wi) * dotProduct(N, wo));
+    return (Vector3f(1) - F) * f_lambert + f_cooktorrance;
+}
+

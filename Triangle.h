@@ -60,7 +60,7 @@ public:
 
     float getArea() { return area; }
 
-    bool hasEmit() { return m->hasEmission(); }
+    bool hasEmit() { return m->HasEmission(); }
 
     void Sample(Intersection& inter, float& pdf) {
         float x = std::sqrt(get_random_float());

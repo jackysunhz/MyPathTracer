@@ -17,26 +17,24 @@ int main()
     Material* white = new Material(DIFFUSE, Vector3f(0.0f), Vector3f(0.725f, 0.71f, 0.68f));
     Material* light = new Material(DIFFUSE, Vector3f(47.83f, 38.57f, 31.08f), Vector3f(0.65f));
     Material* mf_al = new Material(MICROFACET, Vector3f(0.0f), Vector3f(0.92, 0.92, 0.92), 1.4f, 0.01f, 1);
-    Material* mf_au = new Material(MICROFACET, Vector3f(0.0f), Vector3f(0.35, 0.77, 0.92), 0.47f, 0.3f, 1);
+    Material* mf_fe = new Material(MICROFACET, Vector3f(0.0f), Vector3f(0.12, 0.09, 0.07), 1.006f, 0.46f, 0.5);
     Material* mf_cu = new Material(MICROFACET, Vector3f(0.0f), Vector3f(0.95, 0.54, 0.44), 2.f, 0.15f, 1);
 
-    Mesh floor("../../../models/cornellbox/floor.obj", white);
-    Mesh shortbox("../../../models/cornellbox/shortbox.obj", white);
-    Mesh tallbox("../../../models/cornellbox/tallbox.obj", mf_al);
-    Mesh left("../../../models/cornellbox/left.obj", red);
-    Mesh right("../../../models/cornellbox/right.obj", green);
-    Mesh bunny("../../../models/bunny/bunny.obj", mf_cu);
-    Mesh teapot("../../../models/teapot/teapot.obj", mf_au);
-    Mesh light_("../../../models/cornellbox/light.obj", light);
+    Mesh* floor = new Mesh("../../../models/cornellbox/floor.obj", white);
+    Mesh* shortbox = new Mesh("../../../models/cornellbox/shortbox.obj", white);
+    Mesh* tallbox = new Mesh("../../../models/cornellbox/tallbox.obj", mf_al);
+    Mesh* left = new Mesh("../../../models/cornellbox/left.obj", red);
+    Mesh* right = new Mesh("../../../models/cornellbox/right.obj", green);
+    Mesh* bunny = new Mesh("../../../models/bunny/bunny.obj", mf_cu);
+    Mesh* teapot = new Mesh("../../../models/teapot/teapot.obj", mf_fe);
+    Mesh* light_ = new Mesh("../../../models/cornellbox/light.obj", light);
 
-    scene.Add(&floor);
-    scene.Add(&shortbox);
-    scene.Add(&tallbox);
-    scene.Add(&left);
-    scene.Add(&right);
-    scene.Add(&bunny);
-    scene.Add(&teapot);
-    scene.Add(&light_);
+    std::vector<Mesh*> objList{ floor, shortbox, tallbox, left, right, bunny, teapot, light_ };
+    for (Mesh* obj : objList) {
+        if (!obj->IsEmpty()) {
+            scene.Add(obj);
+        }
+    }
 
     std::cout << "Start generating BVH...\n";
     auto start = std::chrono::system_clock::now();

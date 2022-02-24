@@ -65,7 +65,7 @@ A directly runnable [*MyPathTracer.exe*](/sampleExe/MyPathTracer.exe) is provide
 If you wish to build and test the code yourself, make sure you are using an IDE with cmake support(VS2019 in my case), or you have the [cmake software](https://cmake.org/download/) installed in your system. Then you can build a cmake project via the cmakelists provided.  
   
 Additional notes:  
-* If you get an "Assertion failed" error, you are probably building the object with some cmake support tools. You might need to change the relative paths to the model objects in *main.cpp*(line 23), since *CMakeLists.txt* is not guaranteed to be in the parent folder of the .exe file. If you're not familiar with relative paths you can simply replace the paths in *main.cpp* with absolute paths to the .obj files on your local machine.  
+* If you get warnings stating that models are not loaded, you might need to check the relative paths to the model objects in *main.cpp*(line 23). Since *CMakeLists.txt* is not guaranteed to be in the parent folder of the .exe file. If you're not familiar with relative paths you can simply replace the paths in *main.cpp* with absolute paths to the .obj files on your local machine.  
 * The program uses multithreading via [OpenMP](https://www.openmp.org/), which is supported by most of the current compilers, but you can opt not to use it by editting *main.cpp*(line 46)
 
 

@@ -44,11 +44,11 @@ int main()
 
     /*Scene and Renderer Settings*/
     scene.SetFov(40);
-    scene.SetResolution(784, 784);
-    scene.SetRR(0.80);//Each ray is expected to bounce 1 / (1 - RR) times unless it hits light source directly
+    scene.SetResolution(1024, 1024);
+    scene.SetRR(0.83);//Each ray is expected to bounce 1 / (1 - RR) times unless it hits light source directly
     r.EnableMultiThreading(true);//Set to false if openmp is not supported or you do not want to use multi threading
     r.SetMaxThreads(0);//You can specify max number of threads to use here(0 uses all available threads)
-    r.SetSpp(64);//Set number of samplings per pixel(larger SSP usually generates less noisy result)
+    r.SetSpp(2048);//Set number of samplings per pixel(larger SSP usually generates less noisy result)
 
     start = std::chrono::system_clock::now();
     r.Render(scene);
